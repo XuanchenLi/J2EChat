@@ -8,4 +8,5 @@ import javax.ejb.Local;
 public interface UserDao {
     public User findUserByName(String name);
     public boolean addUser(User u);
+    public boolean updateUser(User u);
 }

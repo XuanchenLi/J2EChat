@@ -28,6 +28,7 @@ public class JSonUtil {
             {
                 sb.append(temp);
             }
+            System.out.println(sb.toString());
             br.close();
             //获取JSON对象
             JSONObject jsonRet = JSONObject.parseObject(sb.toString());

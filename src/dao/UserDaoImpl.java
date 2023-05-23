@@ -30,6 +30,7 @@ public class UserDaoImpl implements UserDao{
     @Resource
     private UserTransaction userTransaction;
     public UserDaoImpl() {}
+    @Override
     public User findUserByName(String name) {
         User results = null;
         try {
@@ -52,6 +53,7 @@ public class UserDaoImpl implements UserDao{
         }
         return results;
     }
+    @Override
     public boolean addUser(User u) {
         try {
             userTransaction.begin();
@@ -67,6 +69,33 @@ public class UserDaoImpl implements UserDao{
 
             }
             manager.persist(u);
+            userTransaction.commit();
+            return true;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateUser(User u) {
+        try {
+            userTransaction.begin();
+            Query query = manager.createNativeQuery(
+                    "select * from user where name = ?", User.class
+            );
+            query.setParameter(1, u.getName());
+            User result = null;
+            try {
+                result = (User) query.getSingleResult();
+            }catch (NoResultException e) {
+                userTransaction.commit();
+                return false;
+            }
+            result.setPassword(u.getPassword());
+            result.setEmail(u.getEmail());
+            result.setGender(u.getGender());
+            manager.merge(result);
             userTransaction.commit();
             return true;
         }catch (Exception e) {
