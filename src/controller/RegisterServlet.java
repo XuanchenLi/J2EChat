@@ -23,7 +23,7 @@ public class RegisterServlet extends HttpServlet {
     @EJB
     private LoginService loginService;
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("application/json;charset=UTF-8");
         JSONObject json = JSonUtil.getSomething(request);
         User user = JSON.toJavaObject(json, User.class);
         PrintWriter out = response.getWriter();

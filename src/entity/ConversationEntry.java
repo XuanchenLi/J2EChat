@@ -26,4 +26,8 @@ public class ConversationEntry implements Serializable {
     @OneToMany(cascade = { CascadeType.ALL }, fetch = FetchType.LAZY)
     @JoinColumn(name = "conv_id", referencedColumnName = "id")
     private Collection<ConversationItem> conversations= new ArrayList<ConversationItem>();
+
+    public void addItem(ConversationItem i) {
+        conversations.add(i);
+    }
 }

@@ -31,4 +31,32 @@
         <servlet-name>UpdateUserServlet</servlet-name>
         <url-pattern>/UpdateUserServlet</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>SendMessageServlet</servlet-name>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SendMessageServlet</servlet-name>
+        <url-pattern>/SendMessageServlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>CancelChatServlet</servlet-name>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>CancelChatServlet</servlet-name>
+        <url-pattern>/CancelChatServlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>GetChatEntryServlet</servlet-name>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetChatEntryServlet</servlet-name>
+        <url-pattern>/GetChatEntryServlet</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>GetChatItemServlet</servlet-name>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GetChatItemServlet</servlet-name>
+        <url-pattern>/GetChatItemServlet</url-pattern>
+    </servlet-mapping>
 </web-app>

@@ -15,7 +15,7 @@ import java.io.Serializable;
 @Data
 public class Result<T> implements Serializable {
     private Integer code;
-    private String message;
+    private String message="";
     private boolean success = true;
     private T data;
     @JsonIgnore
