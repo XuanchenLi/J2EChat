@@ -2,6 +2,7 @@ package entity;
 
 import lombok.Data;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.Serializable;
 
 /**
@@ -13,5 +14,6 @@ import java.io.Serializable;
  */
 @Data
 public class GradePack implements Serializable {
+    private Integer uId;
     private Integer grade;
 }

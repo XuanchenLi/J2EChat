@@ -28,6 +28,7 @@ public class UpdateUserServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         User res = userService.updateUserInfo(user);
         if (res != null) {
+            res.setConversations(null);
             Result<User> ret = Result.success(res);
             String js = JSONObject.toJSONString(ret);
             out.write(js);

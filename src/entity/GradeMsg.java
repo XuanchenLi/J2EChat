@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 @Data
 public class GradeMsg implements Serializable {
+    private Integer uId;
     private Integer id;
     private Integer grade;
 }

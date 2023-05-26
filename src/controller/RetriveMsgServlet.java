@@ -1,31 +1,25 @@
 package controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import controller.response.ErrorResult;
 import controller.response.Result;
 import entity.ConversationEntry;
-import entity.GradePack;
-import entity.User;
+import entity.ConversationItem;
 import service.ChatService;
-import utils.JSonUtil;
 import utils.SessionContext;
 
-import javax.jms.Session;
-import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
-@WebServlet(name = "CancelChatServlet")
-public class CancelChatServlet extends HttpServlet {
+@WebServlet(name = "RetriveMsgServlet")
+public class RetriveMsgServlet extends HttpServlet {
     private final String CHAT_SESSION_KEY = "CHAT_KEY";
     private final String SESSION_COOKIE_KEY = "JSESSIONID";
     private SessionContext context = SessionContext.getInstance();
-
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
@@ -49,38 +43,23 @@ public class CancelChatServlet extends HttpServlet {
                 }
             }
         }
-        System.out.println(sessionId);
+        //System.out.println(sessionId);
         ChatService chatService = null;
         if (sessionId != null) {
             HttpSession se = context.getSession(sessionId);
             if (se != null)
                 chatService = (ChatService)se.getAttribute(CHAT_SESSION_KEY);
         }
-        if (chatService == null) {
-            ErrorResult res = ErrorResult.error("不存在活跃会话");
+        if (sessionId == null || chatService == null) {
+            ErrorResult res = ErrorResult.error("");
             String js = JSONObject.toJSONString(res);
             out.write(js);
             out.flush();
             out.close();
-            return;
         }
-        JSONObject json = JSonUtil.getSomething(request);
-        GradePack grade = JSON.toJavaObject(json, GradePack.class);
-//        chatService.gradeChat(grade.getGrade());
-        try {
-            ConversationEntry ret = chatService.cancelChat(grade.getUId(), grade.getGrade());
-            ret.setGrade(grade.getGrade());
-            Result<ConversationEntry> res = Result.success(ret);
-            String js = JSONObject.toJSONString(res);
-            request.getSession().removeAttribute(CHAT_SESSION_KEY);
-            context.delSession(request.getSession());
-            out.write(js);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            ErrorResult res = ErrorResult.error("关闭会话失败");
-            String js = JSONObject.toJSONString(res);
+        if (chatService != null) {
+            Result<ConversationEntry> ls = Result.success(chatService.getEntryItems());
+            String js = JSONObject.toJSONString(ls);
             out.write(js);
             out.flush();
             out.close();

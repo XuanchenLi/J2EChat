@@ -13,6 +13,7 @@ import java.io.Serializable;
  */
 @Data
 public class QuestionPack implements Serializable {
+    private Integer uId;
     private String name;
     private String msg;
 }

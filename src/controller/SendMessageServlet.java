@@ -9,27 +9,67 @@ import entity.QuestionPack;
 import entity.User;
 import service.ChatService;
 import utils.JSonUtil;
+import utils.SessionContext;
 
 import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.Writer;
 
 @WebServlet(name = "SendMessageServlet")
 public class SendMessageServlet extends HttpServlet {
     private final String CHAT_SESSION_KEY = "CHAT_KEY";
+    private final String SESSION_COOKIE_KEY = "JSESSIONID";
+    private SessionContext context = SessionContext.getInstance();
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         request.setCharacterEncoding("UTF-8");
+        response.setHeader("Access-Control-Allow-Credentials","true");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        response.setHeader("Access-Control-Allow-Methods", "GET, HEAD, POST, PUT, DELETE, TRACE, OPTIONS, PATCH");
         Writer out = response.getWriter();
-        ChatService chatService = (ChatService) request.getSession().getAttribute(CHAT_SESSION_KEY);
+        Cookie[] cookies = request.getCookies();
+        String sessionId = null;
+        if (cookies != null) {
+            //从中取出cookie
+            for (int i = 0; i < cookies.length; i++) {
+                //依次取出
+                Cookie temp = cookies[i];
+                //System.out.println(temp.getValue());
+                //判断一下
+                if (temp.getName().equals(SESSION_COOKIE_KEY)) {
+                    sessionId = temp.getValue();
+                    break;
+                }
+            }
+        }
+        //System.out.println(sessionId);
+        ChatService chatService = null;
+        if (sessionId != null) {
+            HttpSession se = context.getSession(sessionId);
+            if (se != null)
+                chatService = (ChatService)se.getAttribute(CHAT_SESSION_KEY);
+        }
+//        if (cookies != null) {
+//            //从中取出cookie
+//            for (int i = 0; i < cookies.length; i++) {
+//                //依次取出
+//                Cookie temp = cookies[i];
+//                System.out.println(temp.getValue());
+//                //判断一下
+//                if (temp.getName().equals(SESSION_COOKIE_KEY)) {
+//                    sessionId = temp.getValue();
+//                    break;
+//                }
+//            }
+//        }
         if (chatService == null) {
             //新对话
+            System.out.println("new s");
             try {
                 InitialContext ctx = new InitialContext();
                 final String appName = "";
@@ -40,6 +80,8 @@ public class SendMessageServlet extends HttpServlet {
                                 +  "/ChatServiceImpl!service.ChatService?stateful"
                 );
                 request.getSession().setAttribute(CHAT_SESSION_KEY, chatService);
+
+                context.addSession(request.getSession());
             }catch (Exception e) {
                 e.printStackTrace();
                 //报错返回
@@ -55,9 +97,10 @@ public class SendMessageServlet extends HttpServlet {
         //s
         JSONObject json = JSonUtil.getSomething(request);
         QuestionPack pack = JSON.toJavaObject(json, QuestionPack.class);
-        ConversationItem retItem = chatService.fetchAnswer(pack.getName(), pack.getMsg());
+        ConversationItem retItem = chatService.fetchAnswer(pack.getUId(),pack.getName(), pack.getMsg());
         if (retItem != null) {
             Result<ConversationItem> res = Result.success(retItem);
+            res.setMessage(chatService.toString());
             String js = JSONObject.toJSONString(res);
             out.write(js);
         }else {

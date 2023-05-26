@@ -59,4 +59,11 @@
         <servlet-name>GetChatItemServlet</servlet-name>
         <url-pattern>/GetChatItemServlet</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>RetriveMsgServlet</servlet-name>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RetriveMsgServlet</servlet-name>
+        <url-pattern>/RetriveMsgServlet</url-pattern>
+    </servlet-mapping>
 </web-app>

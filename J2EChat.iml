@@ -31,7 +31,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" scope="PROVIDED" name="JBoss 7.1.1.Final" level="application_server_libraries" />
+    <orderEntry type="library" exported="" scope="PROVIDED" name="JBoss 7.1.1.Final" level="application_server_libraries" />
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="application" />
     <orderEntry type="library" name="Java EE 6-Java EE 6" level="application" />
     <orderEntry type="module-library" exported="">

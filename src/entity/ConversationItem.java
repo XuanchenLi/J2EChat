@@ -21,9 +21,12 @@ public class ConversationItem implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "[from]")
     private String from;
+    @Column(name = "[to]")
     private String to;
     private String content;
+    @Column(name = "[time]")
     private Date time;
 
 }

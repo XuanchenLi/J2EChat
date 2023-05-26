@@ -38,8 +38,8 @@ public class ConversationEntryDaoImpl implements ConversationEntryDao{
         try {
             userTransaction.begin();
             manager.persist(entry);
-            userTransaction.commit();
             manager.flush();
+            userTransaction.commit();
             return entry.getId();
         }catch (Exception e) {
             e.printStackTrace();
@@ -62,8 +62,44 @@ public class ConversationEntryDaoImpl implements ConversationEntryDao{
                 userTransaction.commit();
                 return false;
             }
-            result.setGrade(grade);
-            manager.merge(result);
+            query = manager.createNativeQuery(
+                    "update conv_entry set grade = ? " +
+                            "where id = ?", ConversationEntry.class
+            );
+            query.setParameter(1, grade)
+                    .setParameter(2, id);
+            query.executeUpdate();
+            userTransaction.commit();
+            return true;
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateOwner(Integer id, Integer uId) {
+        try {
+            userTransaction.begin();
+            Query query = manager.createNativeQuery(
+                    "select * from conv_entry where id = ?", ConversationEntry.class
+            );
+            query.setParameter(1, id);
+            ConversationEntry result = null;
+            try {
+                result = (ConversationEntry) query.getSingleResult();
+            }catch (NoResultException e) {
+                userTransaction.commit();
+                return false;
+            }
+            query = manager.createNativeQuery(
+                    "update conv_entry set user_id = ? " +
+                            "where id = ?", ConversationEntry.class
+            );
+            query.setParameter(1, uId)
+                    .setParameter(2, id);
+            query.executeUpdate();
+            manager.flush();
             userTransaction.commit();
             return true;
         }catch (Exception e) {
